@@ -3,10 +3,16 @@ version: '3.1'
 services:
   backend:
     build: .
-    restart: always
+    restart: unless-stopped
     container_name: kaktus-api
     ports:
       - 8080:8080
+  nginx:
+    image: nginx:stable
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
   mongo:
     image: mongo:7
     restart: unless-stopped

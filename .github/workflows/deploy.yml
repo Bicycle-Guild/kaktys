@@ -11,10 +11,16 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Copy file to server
-        uses: appleboy/ssh-action@v0.1.4
+      - name: Login to Yandex Cloud Container Registry
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v1
         with:
-          host: ${{ secrets.VM_DEPLOY_IP }}
-          username: ${{ secrets.VM_DEPLOY_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          script: whoami
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+      - name: Build, tag, and push image to Yandex Cloud Container Registry
+        env:
+          CR_REGISTRY: ${{ secrets.YC_CI_REGISTRY }}
+          CR_REPO: kaktus-api
+        run: |
+          docker build -t cr.yandex/$CR_REGISTRY/$CR_REPO:latest .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPO:latest

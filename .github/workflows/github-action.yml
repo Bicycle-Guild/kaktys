@@ -11,11 +11,10 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: copy file to server
-        uses: appleboy/scp-action@v0.1.4
+      - name: Copy file to server
+        uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.VM_DEPLOY_IP }}
           username: ${{ secrets.VM_DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          source: .
-          target: /app
+          script: whoami

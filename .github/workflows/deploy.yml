@@ -2,7 +2,9 @@ name: Deploy
 run-name: CD Proccess
 
 on:
-  push
+  push:
+    branches:
+      - main
 
 env:
    CR_REGISTRY: ${{ secrets.YC_CI_REGISTRY }}

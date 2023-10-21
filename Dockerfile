@@ -4,9 +4,9 @@ WORKDIR /app
 
 COPY go.mod go.sum ./
 
-RUN go mod download && go mod tidy
+RUN go mod download
 
-COPY *.go ./
+COPY *.go */*.go ./
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /kaktus
 

@@ -25,6 +25,16 @@ jobs:
           docker build -t cr.yandex/$CR_REGISTRY/$CR_REPO:latest .
           docker push cr.yandex/$CR_REGISTRY/$CR_REPO:latest
 
+      - name: Export ENV
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.VM_DEPLOY_IP }}
+          username: ${{ secrets.VM_DEPLOY_USERNAME }}
+          port: ${{ secrets.VM_DEPLOY_IP }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            EXPORT CR_ID=${{ secrets.YC_CI_REGISTRY }}
+
       - name: Copy docker-compose file
         uses: appleboy/scp-action@v0.1.4
         with:

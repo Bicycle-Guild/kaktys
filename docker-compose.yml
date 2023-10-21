@@ -1,0 +1,42 @@
+version: '3.1'
+
+services:
+  kaktus-api:
+    image: cr.yandex/${CR_ID}/kaktus-api
+    restart: unless-stopped
+    container_name: kaktus-api
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+    expose:
+      - 8080
+    networks:
+      - kaktus-network
+  nginx:
+    depends_on:
+      - kaktus-api
+    image: nginx:stable
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - kaktus-network
+  kaktus-db:
+    image: mongo:7
+    restart: unless-stopped
+    container_name: kaktus-db
+    expose:
+      - 27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+      MONGO_INITDB_DATABASE: kaktus
+    volumes:
+      - ./data:/data/db
+    networks:
+      - kaktus-network
+
+networks:
+  kaktus-network:

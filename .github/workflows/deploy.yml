@@ -1,0 +1,63 @@
+name: Deploy
+run-name: CD Proccess
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+   CR_REGISTRY: ${{ secrets.YC_CI_REGISTRY }}
+   CR_REPO: kaktus-api
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Login to Yandex Cloud Container Registry
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v1
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+      - name: Publish to Yandex Container Registry
+        run: |
+          docker build -t cr.yandex/$CR_REGISTRY/$CR_REPO:latest .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPO:latest
+
+      - name: Copy docker-compose file
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VM_DEPLOY_IP }}
+          username: ${{ secrets.VM_DEPLOY_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "docker-compose.yml,nginx.conf"
+          target: ./app
+
+      - name: Export ENV
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.VM_DEPLOY_IP }}
+          username: ${{ secrets.VM_DEPLOY_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            rm ./app/.env
+            echo 'CR_ID=${{ secrets.YC_CI_REGISTRY }}' >> ./app/.env
+            echo 'DB_USER=${{ secrets.DB_USER }}' >> ./app/.env
+            echo 'DB_PASSWORD=${{ secrets.DB_PASSWORD }}' >> ./app/.env
+            echo 'MONGODB_URI=mongodb://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@kaktus-db:27017/' >> ./app/.env
+
+      - name: Start docker containers
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.VM_DEPLOY_IP }}
+          username: ${{ secrets.VM_DEPLOY_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ./app
+            docker pull cr.yandex/$CR_REGISTRY/$CR_REPO:latest
+            docker compose down
+            docker compose up -d

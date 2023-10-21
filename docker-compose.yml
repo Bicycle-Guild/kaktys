@@ -5,6 +5,8 @@ services:
     image: cr.yandex/${CR_ID}/kaktus-api
     restart: unless-stopped
     container_name: kaktus-api
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
     expose:
       - 8080
     networks:

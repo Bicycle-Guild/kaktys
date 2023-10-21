@@ -17,10 +17,20 @@ jobs:
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
 
-      - name: Build, tag, and push image to Yandex Cloud Container Registry
+      - name: Publish to Yandex Container Registry
         env:
           CR_REGISTRY: ${{ secrets.YC_CI_REGISTRY }}
           CR_REPO: kaktus-api
         run: |
           docker build -t cr.yandex/$CR_REGISTRY/$CR_REPO:latest .
           docker push cr.yandex/$CR_REGISTRY/$CR_REPO:latest
+
+      - name: Copy docker-compose file
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VM_DEPLOY_IP }}
+          username: ${{ secrets.VM_DEPLOY_USERNAME }}
+          port: ${{ secrets.VM_DEPLOY_IP }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "./docker-compose.yml"
+          target: /app

@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   backend:
-    build: .
+    image: cr.yandex/${CR_ID}/kaktus-api
     restart: unless-stopped
     container_name: kaktus-api
     ports:

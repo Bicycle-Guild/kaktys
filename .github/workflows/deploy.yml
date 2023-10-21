@@ -2,9 +2,7 @@ name: Deploy
 run-name: CD Proccess
 
 on:
-  push:
-    branches:
-      - main
+  push
 
 jobs:
   deploy:

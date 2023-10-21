@@ -41,4 +41,4 @@ jobs:
           username: ${{ secrets.VM_DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           source: "docker-compose.yml"
-          target: /app
+          target: ./app

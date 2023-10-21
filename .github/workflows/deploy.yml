@@ -32,7 +32,7 @@ jobs:
           username: ${{ secrets.VM_DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            EXPORT CR_ID=${{ secrets.YC_CI_REGISTRY }}
+            export CR_ID=${{ secrets.YC_CI_REGISTRY }}
 
       - name: Copy docker-compose file
         uses: appleboy/scp-action@v0.1.4

@@ -40,5 +40,5 @@ jobs:
           host: ${{ secrets.VM_DEPLOY_IP }}
           username: ${{ secrets.VM_DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          source: "./docker-compose.yml"
+          source: "docker-compose.yml"
           target: /app

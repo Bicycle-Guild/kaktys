@@ -32,7 +32,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
       MONGO_INITDB_DATABASE: kaktus
     volumes:
-      - ./data:/data/db:ro
+      - ./data:/data/db
     networks:
       - kaktus-network
 

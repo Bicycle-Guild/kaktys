@@ -54,4 +54,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd ./app
-            docker compose restart
+            docker compose down
+            docker compose up -d

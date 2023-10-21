@@ -30,7 +30,6 @@ jobs:
         with:
           host: ${{ secrets.VM_DEPLOY_IP }}
           username: ${{ secrets.VM_DEPLOY_USERNAME }}
-          port: ${{ secrets.VM_DEPLOY_IP }}
           key: ${{ secrets.SSH_KEY }}
           script: |
             EXPORT CR_ID=${{ secrets.YC_CI_REGISTRY }}
@@ -40,7 +39,6 @@ jobs:
         with:
           host: ${{ secrets.VM_DEPLOY_IP }}
           username: ${{ secrets.VM_DEPLOY_USERNAME }}
-          port: ${{ secrets.VM_DEPLOY_IP }}
           key: ${{ secrets.SSH_KEY }}
           source: "./docker-compose.yml"
           target: /app

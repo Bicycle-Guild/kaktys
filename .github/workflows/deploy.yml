@@ -42,10 +42,11 @@ jobs:
           username: ${{ secrets.VM_DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            rm ./app/.env
             echo 'CR_ID=${{ secrets.YC_CI_REGISTRY }}' >> ./app/.env
             echo 'DB_USER=${{ secrets.DB_USER }}' >> ./app/.env
             echo 'DB_PASSWORD=${{ secrets.DB_PASSWORD }}' >> ./app/.env
-            echo 'MONGODB_URI=mongodb://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@kaktus-db:27017/'
+            echo 'MONGODB_URI=mongodb://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@kaktus-db:27017/' >> /.app/.env
 
       - name: Start docker containers
         uses: appleboy/ssh-action@v0.1.4
